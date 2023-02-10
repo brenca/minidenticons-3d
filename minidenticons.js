@@ -26,7 +26,7 @@ function simpleHash(str) {
 export function identicon(username, saturation=DEFAULT_SATURATION, lightness=DEFAULT_LIGHTNESS) {
     const hash = simpleHash(username)
     // dividing hash by FNV_PRIME to get last XOR result for better color randomness (will be an integer except for empty string hash)
-    const hue = ((hash / FNV_PRIME) % COLORS_NB) * (360 / COLORS_NB)
+    const colorMap = colors(username, saturation, lightness)
     const rects = [...Array(username ? GRID_SIZE * GRID_SIZE : 0)].reduce((acc, e, i) => {
         const effectiveX = ~~(i / GRID_SIZE) >= GRID_SIZE / 2 ? ~~(3 * GRID_SIZE / 2) - ~~(i / GRID_SIZE) : ~~(i / GRID_SIZE)
         const halfGrid = (~~(GRID_SIZE / 2) + 1)
@@ -44,22 +44,35 @@ export function identicon(username, saturation=DEFAULT_SATURATION, lightness=DEF
     }).map(rect => {
         return `<use href="#identicon-svg-cube-${hash}" y="${rect.y}" x="${rect.x}"/>`
     })
-    const color = `hsl(${hue} ${saturation}% ${lightness}%)`
-    const topSide = `hsl(${hue} 50% 65%)`
-    const leftSide = `hsl(${hue} 25% 35%)`
 
     return `<svg viewBox="-3 -3 ${GRID_SIZE + 6} ${GRID_SIZE + 6}" xmlns="http://www.w3.org/2000/svg">` +
         `<defs>` + 
             `<g stroke-width="0.05" id="identicon-svg-cube-${hash}">` + 
-                `<path d="M 0 0 L -0.866 -0.5 L -0.866 0.5 L 0 1 L 0 0" fill="${leftSide}" stroke="${leftSide}"/>` +
-                `<path d="M 0 0 L -0.866 -0.5 L 0 -1 L 0.866 -0.5 L 0 0" fill="${topSide}" stroke="${topSide}"/>` +
-                `<path d="M 0 0 L 0.866 -0.5 L 0.866 0.5 L 0 1 L 0 0" fill="${color}" stroke="${color}"/>` +
+                `<path d="M 0 0 L -0.866 -0.5 L -0.866 0.5 L 0 1 L 0 0" fill="${colorMap.darkColor}" stroke="${colorMap.darkColor}"/>` +
+                `<path d="M 0 0 L -0.866 -0.5 L 0 -1 L 0.866 -0.5 L 0 0" fill="${colorMap.lightColor}" stroke="${colorMap.lightColor}"/>` +
+                `<path d="M 0 0 L 0.866 -0.5 L 0.866 0.5 L 0 1 L 0 0" fill="${colorMap.color}" stroke="${colorMap.color}"/>` +
             `</g>` +
         `</defs>` +
         `<g transform="translate(0.75 1.5)">` +
             rects + 
         `</g>` +
     `</svg>`
+}
+
+/**
+ * @type {import('.').colors}
+ */
+export function colors(username, saturation=DEFAULT_SATURATION, lightness=DEFAULT_LIGHTNESS) {
+    const hash = simpleHash(username)
+    // dividing hash by FNV_PRIME to get last XOR result for better color randomness (will be an integer except for empty string hash)
+    const hue = ((hash / FNV_PRIME) % COLORS_NB) * (360 / COLORS_NB)
+    const color = `hsl(${hue} ${saturation}% ${lightness}%)`
+    const topSide = `hsl(${hue} 50% 65%)`
+    const leftSide = `hsl(${hue} 25% 35%)`
+
+    return {
+        color, lightColor: topSide, darkColor: leftSide
+    }
 }
 
 /**

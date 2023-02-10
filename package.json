@@ -1,8 +1,11 @@
 {
-  "name": "minidenticons",
+  "name": "minidenticons-3d",
   "version": "2.0.0",
   "description": "Super lightweight SVG identicon (icon avatar) generator",
-  "author": "Laurent Payot",
+  "contributors": [
+    "Laurent Payot",
+    "Heilig Benedek <benecene@gmail.com>"
+  ],
   "license": "MIT",
   "keywords": [
     "identicon",
@@ -15,12 +18,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/laurentpayot/minidenticons.git"
+    "url": "git+https://github.com/brenca/minidenticons-3d.git"
   },
   "bugs": {
-    "url": "https://github.com/laurentpayot/minidenticons/issues"
+    "url": "https://github.com/brenca/minidenticons-3d/issues"
   },
-  "homepage": "https://laurentpayot.github.io/minidenticons",
+  "homepage": "https://laurentpayot.github.io/minidenticons-3d",
   "type": "module",
   "sideEffects": false,
   "main": "./minidenticons.js",
@@ -35,16 +38,14 @@
   },
   "scripts": {
     "build-js": "terser minidenticons.js --compress module=true --mangle module=true --source-map --output minidenticons.min.js",
-    "no-custom-element": "cat minidenticons.min.js | sed 's/export const identiconSvg=.*$//' > no-custom-element.min.js",
-    "size": "echo \"\n\n\nMinified gzip size:\t`gzip -9cn minidenticons.min.js | wc -c` bytes\nMinified brotli size:\t`brotli -Zcn minidenticons.min.js | wc -c` bytes\n\"",
-    "size-nce": "echo \"\nWithout custom element:\n\nMinified gzip size:\t`gzip -9cn no-custom-element.min.js | wc -c` bytes\nMinified brotli size:\t`brotli -Zcn no-custom-element.min.js | wc -c` bytes\n\"",
-    "build": "pnpm build-js && printf '_%.0s' {1..40} && pnpm no-custom-element && pnpm --silent size && pnpm --silent size-nce",
+    "build": "pnpm build-js",
     "test": "node tests",
     "benchmark": "node benchmark/node",
-    "prepublish": "pnpm build && pnpm test && git push && git push --tags",
-    "serve": "python3 -m http.server"
+    "prepublish": "pnpm build",
+    "serve": "python3 ./serve.py"
   },
   "devDependencies": {
+    "pnpm": "^7.27.0",
     "terser": "^5.16.0"
   }
 }

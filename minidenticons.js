@@ -1,5 +1,6 @@
 // density of 4 for the lowest probability of collision
 const SQUARE_DENSITY = 4
+const GRID_SIZE = 5
 // 18 different colors only for easy distinction
 const COLORS_NB = 18
 const DEFAULT_SATURATION = 50
@@ -26,15 +27,39 @@ export function identicon(username, saturation=DEFAULT_SATURATION, lightness=DEF
     const hash = simpleHash(username)
     // dividing hash by FNV_PRIME to get last XOR result for better color randomness (will be an integer except for empty string hash)
     const hue = ((hash / FNV_PRIME) % COLORS_NB) * (360 / COLORS_NB)
-    return [...Array(username ? 25 : 0)].reduce((acc, e, i) =>
-        // 2 + ((3 * 5 - 1) - modulo) to concentrate squares at the center
-        hash % (16 - i % 15) < SQUARE_DENSITY ?
-            acc + `<rect x="${i > 14 ? 7 - ~~(i / 5) : ~~(i / 5)}" y="${i % 5}" width="1" height="1"/>`
-        : acc,
-        // xmlns attribute added in case of SVG file generation https://developer.mozilla.org/en-US/docs/Web/SVG/Element/svg#sect1
-        `<svg viewBox="-1.5 -1.5 8 8" xmlns="http://www.w3.org/2000/svg" fill="hsl(${hue} ${saturation}% ${lightness}%)">`
-    )
-    + '</svg>'
+    const rects = [...Array(username ? GRID_SIZE * GRID_SIZE : 0)].reduce((acc, e, i) => {
+        const effectiveX = ~~(i / GRID_SIZE) >= GRID_SIZE / 2 ? ~~(3 * GRID_SIZE / 2) - ~~(i / GRID_SIZE) : ~~(i / GRID_SIZE)
+        const halfGrid = (~~(GRID_SIZE / 2) + 1)
+
+        if (hash % ((2 + (halfGrid * GRID_SIZE - 1)) - i % (halfGrid * GRID_SIZE)) < SQUARE_DENSITY) {
+            return acc.concat({
+                x: effectiveX * 0.866,
+                y: i % GRID_SIZE - effectiveX * 0.5
+            })
+        } else {
+            return acc
+        }
+    }, []).sort((a, b) => {
+        return b.x - a.x + b.y - a.y
+    }).map(rect => {
+        return `<use href="#identicon-svg-cube-${hash}" y="${rect.y}" x="${rect.x}"/>`
+    })
+    const color = `hsl(${hue} ${saturation}% ${lightness}%)`
+    const topSide = `hsl(${hue} 50% 65%)`
+    const leftSide = `hsl(${hue} 25% 35%)`
+
+    return `<svg viewBox="-3 -3 ${GRID_SIZE + 6} ${GRID_SIZE + 6}" xmlns="http://www.w3.org/2000/svg">` +
+        `<defs>` + 
+            `<g stroke-width="0.05" id="identicon-svg-cube-${hash}">` + 
+                `<path d="M 0 0 L -0.866 -0.5 L -0.866 0.5 L 0 1 L 0 0" fill="${leftSide}" stroke="${leftSide}"/>` +
+                `<path d="M 0 0 L -0.866 -0.5 L 0 -1 L 0.866 -0.5 L 0 0" fill="${topSide}" stroke="${topSide}"/>` +
+                `<path d="M 0 0 L 0.866 -0.5 L 0.866 0.5 L 0 1 L 0 0" fill="${color}" stroke="${color}"/>` +
+            `</g>` +
+        `</defs>` +
+        `<g transform="translate(0.75 1.5)">` +
+            rects + 
+        `</g>` +
+    `</svg>`
 }
 
 /**

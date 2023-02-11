@@ -43,13 +43,77 @@
             display: block;
             margin: -225px auto 160px auto;
         }
+
+        @keyframes moveCube1 {
+            0%   { transform: translate(0%, 0%); } 
+            40%  { transform: translate(0%, 0%); }  
+            50%  { transform: translate(0%, 0%); }
+            60%  { transform: translate(8%, 5%); }  
+            70%  { transform: translate(8%, 5%); }
+            80%  { transform: translate(0%, 0%); }  
+            90%  { transform: translate(-8%, -5%); }
+            100% { transform: translate(0%, 0%); }            
+        }
+
+        @keyframes moveCube2 {
+            0%   { transform: translate(0%, 0%); } 
+            40%  { transform: translate(0%, 0%); }  
+            50%  { transform: translate(-8%, -5%); }
+            60%  { transform: translate(0%, 0%); }  
+            70%  { transform: translate(8%, 5%); }
+            80%  { transform: translate(8%, 5%); }  
+            90%  { transform: translate(0%, 0%); }
+            100% { transform: translate(0%, 0%); }            
+        }
+
+        @keyframes moveCube3 {
+            0%   { transform: translate(0%, 0%); } 
+            40%  { transform: translate(0%, 0%); }  
+            50%  { transform: translate(0%, 0%); }
+            60%  { transform: translate(0%, 0%); }  
+            70%  { transform: translate(8%, 5%); }
+            80%  { transform: translate(8%, 5%); }  
+            90%  { transform: translate(8%, 5%); }
+            100% { transform: translate(0%, 0%); }            
+        }
+
+        @keyframes moveCube4 {
+            0%   { transform: translate(0%, 0%); } 
+            40%  { transform: translate(0%, 0%); }  
+            50%  { transform: translate(-8%, -5%); }
+            60%  { transform: translate(-8%, -5%); }  
+            70%  { transform: translate(0%, 0%); }
+            80%  { transform: translate(8%, 5%); }  
+            90%  { transform: translate(8%, 5%); }
+            100% { transform: translate(0%, 0%); }            
+        }
+
+        .minidenticon-3d-svg:hover .cube[data-animation-offset="-2"] {
+            animation: 2s linear 0s infinite moveCube1;
+        }
+
+        .minidenticon-3d-svg:hover .cube[data-animation-offset="-1"] {
+            animation: 2s linear 0s infinite moveCube2;
+        }
+
+        .minidenticon-3d-svg:hover .cube[data-animation-offset="0"] {
+            transform: translate(0%, 0%);
+        }
+
+        .minidenticon-3d-svg:hover .cube[data-animation-offset="1"] {
+            animation: 2s linear 0s infinite moveCube3;
+        }
+
+        .minidenticon-3d-svg:hover .cube[data-animation-offset="2"] {
+            animation: 2s linear 0s infinite moveCube4;
+        }
     </style>
 </head>
 
 <body>
 
 <script type="module">
-    import { identiconSvg, colors } from "./minidenticons.min.js"
+    import { identiconSvg, colors } from "./minidenticons.js"
 
     const main = document.querySelector('main')
     const usernameInput = main.querySelector('#username-input')

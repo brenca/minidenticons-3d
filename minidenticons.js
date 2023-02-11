@@ -40,7 +40,10 @@ export function identicon(username, saturation=DEFAULT_SATURATION, lightness=DEF
         if (hash % ((2 + (halfGrid * GRID_SIZE - 1)) - i % (halfGrid * GRID_SIZE)) < SQUARE_DENSITY) {
             return acc.concat({
                 x: effectiveX * 0.866,
-                y: i % GRID_SIZE - effectiveX * 0.5
+                y: i % GRID_SIZE - effectiveX * 0.5,
+                xCoord: effectiveX,
+                yCoord: i % GRID_SIZE,
+                animationOffset: (hash - 7 * i + 13) % 5 - 3
             })
         } else {
             return acc
@@ -48,15 +51,16 @@ export function identicon(username, saturation=DEFAULT_SATURATION, lightness=DEF
     }, []).sort((a, b) => {
         return b.x - a.x + b.y - a.y
     }).map(rect => {
-        return `<use href="#identicon-svg-cube-${hash}" y="${rect.y}" x="${rect.x}"/>`
+        return `<use class="cube" href="#identicon-svg-cube-${hash}" y="${rect.y}" x="${rect.x}" ` +
+            `data-x="${rect.xCoord}" data-y="${rect.yCoord}" data-animation-offset="${rect.animationOffset}"/>`
     })
 
-    return `<svg viewBox="-3 -3 ${GRID_SIZE + 6} ${GRID_SIZE + 6}" xmlns="http://www.w3.org/2000/svg">` +
+    return `<svg class="minidenticon-3d-svg" viewBox="-3 -3 ${GRID_SIZE + 6} ${GRID_SIZE + 6}" xmlns="http://www.w3.org/2000/svg">` +
         `<defs>` + 
             `<g stroke-width="0.05" id="identicon-svg-cube-${hash}">` + 
-                `<path d="M 0 0 L -0.866 -0.5 L -0.866 0.5 L 0 1 L 0 0" fill="${colorMap.darkColor}" stroke="${colorMap.darkColor}"/>` +
-                `<path d="M 0 0 L -0.866 -0.5 L 0 -1 L 0.866 -0.5 L 0 0" fill="${colorMap.lightColor}" stroke="${colorMap.lightColor}"/>` +
-                `<path d="M 0 0 L 0.866 -0.5 L 0.866 0.5 L 0 1 L 0 0" fill="${colorMap.color}" stroke="${colorMap.color}"/>` +
+                `<path d="M 0 0 L -0.866 -0.5 L -0.866 0.5 L 0 1 L 0 0" class="side-face" fill="${colorMap.darkColor}" stroke="${colorMap.darkColor}"/>` +
+                `<path d="M 0 0 L -0.866 -0.5 L 0 -1 L 0.866 -0.5 L 0 0" class="top-face" fill="${colorMap.lightColor}" stroke="${colorMap.lightColor}"/>` +
+                `<path d="M 0 0 L 0.866 -0.5 L 0.866 0.5 L 0 1 L 0 0" class="front-face" fill="${colorMap.color}" stroke="${colorMap.color}"/>` +
             `</g>` +
         `</defs>` +
         `<g transform="translate(0.75 1.5)">` +

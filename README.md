@@ -23,7 +23,7 @@ Generate identicons (pixelated avatars) on the client from usernames instead of 
 
 ## Live Demo :video_game:
 
-Play with it [here](https://laurentpayot.github.io/minidenticons/).
+Play with it [here](https://brenca.github.io/minidenticons/).
 
 ## On Browser
 

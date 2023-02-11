@@ -5,6 +5,12 @@ const GRID_SIZE = 5
 const COLORS_NB = 18
 const DEFAULT_SATURATION = 50
 const DEFAULT_LIGHTNESS = 50
+const BG_LIGHTNESS_MIN = 80
+const BG_LIGHTNESS_MAX = 90
+const BG_LIGHTNESS_RANGE_SIZE = BG_LIGHTNESS_MAX - BG_LIGHTNESS_MIN
+const BG_SATURATION_MIN = 25
+const BG_SATURATION_MAX = 40
+const BG_SATURATION_RANGE_SIZE = BG_SATURATION_MAX - BG_SATURATION_MIN
 
 // 32 bit FNV-1a hash parameters
 const FNV_PRIME = 16777619
@@ -67,11 +73,15 @@ export function colors(username, saturation=DEFAULT_SATURATION, lightness=DEFAUL
     // dividing hash by FNV_PRIME to get last XOR result for better color randomness (will be an integer except for empty string hash)
     const hue = ((hash / FNV_PRIME) % COLORS_NB) * (360 / COLORS_NB)
     const color = `hsl(${hue} ${saturation}% ${lightness}%)`
-    const topSide = `hsl(${hue} 50% 65%)`
-    const leftSide = `hsl(${hue} 25% 35%)`
+    const lightColor = `hsl(${hue} ${saturation}% ${parseFloat(lightness) + 15}%)`
+    const darkColor = `hsl(${hue} ${~~(parseFloat(saturation) / 2)}% ${parseFloat(lightness) - 15 }%)`
+
+    const backgroundLightness = ((hash / FNV_PRIME) % BG_LIGHTNESS_RANGE_SIZE) + BG_LIGHTNESS_MIN
+    const backgroundSaturation = ((hash / FNV_PRIME) % BG_SATURATION_RANGE_SIZE) + BG_SATURATION_MIN
+    const backgroundColor = `hsl(${hue} ${backgroundSaturation}% ${backgroundLightness}%)`
 
     return {
-        color, lightColor: topSide, darkColor: leftSide
+        color, lightColor, darkColor, backgroundColor
     }
 }
 

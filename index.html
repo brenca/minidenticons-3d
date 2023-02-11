@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width">
 
-    <title>Minidenticons Demo</title>
+    <title>Minidenticons-3D Demo</title>
 
     <style type="text/css" media="screen, print">
         body {
@@ -34,7 +34,6 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background-color: #EEF;
             display: inline-block;
             margin: 5px;
         }
@@ -50,7 +49,7 @@
 <body>
 
 <script type="module">
-    import { identiconSvg } from "./minidenticons.min.js"
+    import { identiconSvg, colors } from "./minidenticons.min.js"
 
     const main = document.querySelector('main')
     const usernameInput = main.querySelector('#username-input')
@@ -60,13 +59,21 @@
     const lightnessLabel = main.querySelector('label[for=lightness]')
 
     function refresh() {
+        const backgroundColor = colors(
+            usernameInput.value, 
+            saturationInput.value, 
+            lightnessInput.value
+        ).backgroundColor
+
         saturationLabel.textContent = `Saturation ${saturationInput.value}%`
         lightnessLabel.textContent = `Lightness ${lightnessInput.value}%`
         main.insertAdjacentHTML("afterend",
-            `<identicon-svg username="${usernameInput.value}"
+            `<identicon-svg style="background: ${backgroundColor}"
+                username="${usernameInput.value}"
                 title='"${usernameInput.value.replaceAll("'", "&apos;")}",
                         ${saturationInput.value}, ${lightnessInput.value}'
-                saturation="${saturationInput.value}" lightness="${lightnessInput.value}"
+                saturation="${parseInt(saturationInput.value)}" 
+                lightness="${parseInt(lightnessInput.value)}"
             >`
         )
     }
@@ -79,13 +86,13 @@
 
 </script>
 
-<a id="github-link" href="https://github.com/laurentpayot/minidenticons">
+<a id="github-link" href="https://github.com/brenca/minidenticons-3d">
     <img src="https://badgen.net/badge/icon/github?icon=github&label" alt="GitHub repository">
 </a>
 
 <main>
     <h1>Minidenticons Demo</h1>
-    <input id="username-input" autofocus size="18" placeholder="Enter a nice username">
+    <input id="username-input" autofocus size="18" placeholder="Enter a nice username" value="user@example.com">
     <fieldset>
         <p>
             <input type="range" id="saturation-input" min="0" max="100" value="50">

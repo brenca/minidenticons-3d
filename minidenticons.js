@@ -51,8 +51,9 @@ export function identicon(username, saturation=DEFAULT_SATURATION, lightness=DEF
     }, []).sort((a, b) => {
         return b.x - a.x + b.y - a.y
     }).map(rect => {
-        return `<use class="cube" href="#identicon-svg-cube-${hash}" y="${rect.y}" x="${rect.x}" ` +
-            `data-x="${rect.xCoord}" data-y="${rect.yCoord}" data-animation-offset="${rect.animationOffset}"/>`
+        return `<g class="cube" data-x="${rect.xCoord}" data-y="${rect.yCoord}" data-animation-offset="${rect.animationOffset}">` +
+            `<use class="cube-svg" href="#identicon-svg-cube-${hash}" y="${rect.y}" x="${rect.x}"/>`+
+        `</g>`
     })
 
     return `<svg class="minidenticon-3d-svg" viewBox="-3 -3 ${GRID_SIZE + 6} ${GRID_SIZE + 6}" xmlns="http://www.w3.org/2000/svg">` +
@@ -64,7 +65,7 @@ export function identicon(username, saturation=DEFAULT_SATURATION, lightness=DEF
             `</g>` +
         `</defs>` +
         `<g transform="translate(0.75 1.5)">` +
-            rects + 
+            rects.join('\n') + 
         `</g>` +
     `</svg>`
 }

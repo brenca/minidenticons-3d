@@ -3,4 +3,5 @@ export function colors(username: string, saturation?: number|string, lightness?:
     color: string
     lightColor: string
     darkColor: string
+    backgroundColor: string
 }
